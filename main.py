@@ -1,6 +1,3 @@
-# ADD FEATURE WHERE TEMPERATURE CAN BE ADDED LIVE
-
-import numpy
 import random
 import copy
 import pygame
@@ -11,8 +8,10 @@ from colour import Color
 WIDTH = 640
 HEIGHT = 480
 
+# Temperature Matrix Dimensions
 GRID_SIZE = 100
 
+# Temperature Range (Kelvin)
 temp_range = (50, 250)
 
 # Pygame window
@@ -22,7 +21,7 @@ pygame.display.set_caption("Plate Temp Simulation v0.0.1")
 # Tick rate of the clock
 TICK_RATE = 1000
 
-# Conductivity of the plate
+# Conductivity of the plate (<= 0.25)
 conductivity = 0.1
 
 # Color Gradient
@@ -31,7 +30,7 @@ org_colors = list(red.range_to(Color("blue"), temp_range[1] - temp_range[0]))
 org_colors.reverse()
 colors = []
 
-
+# Create list of RGB tuples from the generated color gradient so pygame can use
 for i in range(len(org_colors)):
     color_code = org_colors[i].get_rgb()
 
@@ -44,8 +43,8 @@ for i in range(len(org_colors)):
 
     colors.append(color_tup)
 
-plate = [[float(random.randint(1, 100)) for temp in range(GRID_SIZE)] for point in range(GRID_SIZE)]
-
+# Generate 2D list of size GRID_SIZE x GRID_SIZE
+plate = [[0.0 for temp in range(GRID_SIZE)] for point in range(GRID_SIZE)]
 
 
 def shape_plate(shape="metaball", count=1):
@@ -82,25 +81,22 @@ def shape_plate(shape="metaball", count=1):
                     plate[i][j] = temp_range[0] + 3
 
 
-
-
 shape_plate(shape="normal_dist", count=80)
 
 print(plate)
 
-display_plate = copy.deepcopy(plate)
-
 class TempPoint:
 
     '''
-
     Defines a point on the screen that represents a temp point
-
     parameters:
         x_pos -- x position of the temperature point
         y_pos -- y position of the temperature point
         temp -- initial temperature of the point
 
+    methods:
+        update_temp(temp) -- updates temperature and corresponding color of point
+        draw_point() -- draws point to the window
     '''
 
     def __init__(self, x_pos: int, y_pos: int, temp: float):
@@ -178,16 +174,5 @@ while run:
         if event.type == pygame.QUIT:
             run = False
 
-    #if runtime % 10 == 0:
     draw_window()
-
-
     runtime += 1
-    '''
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-    for row in display_plate:
-        print(row)
-
-    print(temp_sum)
-    '''
